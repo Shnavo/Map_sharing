@@ -2,5 +2,5 @@
 __pycache__/
 *.pyc
 test*
-credentials.json
+credentials
 token.json
