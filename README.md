@@ -1,6 +1,6 @@
 # Google Drive Map Synchronizer
 
-A robust Python-based utility designed to automatically synchronize local map files (.fwl, .db) with Google Drive. The script intelligently compares modification timestamps to decide whether to upload local changes to the cloud or download updates to the local machine.
+Python-based utility designed to automatically synchronize local map files (.fwl, .db) with Google Drive. The script intelligently compares modification timestamps to decide whether to upload local changes to the cloud or download updates to the local machine.
 
 ## Features
 - Two-Way Synchronization: Compares modification times between local and remote files.
@@ -32,13 +32,13 @@ Set the path to your maps folder within the path.py file in credentials folder:
 ### Usage
 On the first run, a browser window will open asking for Google account authorization. Once granted, a token.json file will be created, allowing the script to run automatically in the future without manual login.
 
-### Sync Logic Explained
+## Sync Logic Explained
 The program follows a strict logic based on the modifiedTime field:
 - Upload: Triggered if the local file is newer than the Google Drive version by more than a 20-second margin.
 - Download: Triggered if the Google Drive version is newer than the local fileby more than a 20-second margin.
 - Idle: No action is taken if the timestamps are within the tolerance window (handling server-side time drift).
 
-### TO-DO
+## TO-DO
 - [ ]**TYPEHINTING!!!**
 - [ ]create a first time launch setup for putting in correct paths
 - [ ]create a simple UI to show what's going on
