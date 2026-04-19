@@ -1,6 +1,6 @@
 # Google Drive Map Synchronizer
 
-Python-based utility designed to automatically synchronize local map files (.fwl, .db) with Google Drive. The script intelligently compares modification timestamps to decide whether to upload local changes to the cloud or download updates to the local machine.
+Python-based script created by the need to share Valheim map files between multiple people. The script compares modification timestamps to decide whether to upload local changes to the cloud or download updates to the local machine.
 
 ## Features
 - Two-Way Synchronization: Compares modification times between local and remote files.
