@@ -39,7 +39,7 @@ The program follows a strict logic based on the modifiedTime field:
 - Idle: No action is taken if the timestamps are within the tolerance window (handling server-side time drift).
 
 ## TO-DO
-- [ ]**TYPEHINTING!!!**
 - [ ]create a first time launch setup for putting in correct paths
 - [ ]create a simple UI to show what's going on
+- [x]TYPEHINTING!!!
 - [x]Initial release with OAuth2 support
