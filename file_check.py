@@ -48,3 +48,6 @@ def date_check(file_list):
         #     print(
         #         f"{item['name']} ({item['id']}) modified: {item['modifiedTime']} created: {item['createdTime']}"
         #     )
+
+def test_function():
+    print("I am a test function")
