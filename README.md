@@ -25,9 +25,15 @@ Install the required libraries using pip:
 		pip install requirements.txt
 		
 ### Configuration
-Set the path to your maps folder within the path.py file in credentials folder:
+In the **credentials** folder create a file called **path.py** and paste the path to your maps folder inside with the below format:
 
 		MAP_PATH = "C:/Path/To/Your/Maps"
+
+Below that paste in the id of the google drive folder where your files are/need to be located with the below format:
+
+		DRIVE_ID = "string_of_letters_and_numbers"
+
+You can find the id in the URL of the Google Drive folder after 'folders/'
 
 ### Usage
 On the first run, a browser window will open asking for Google account authorization. Once granted, a token.json file will be created, allowing the script to run automatically in the future without manual login.
