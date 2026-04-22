@@ -2,13 +2,11 @@ import datetime as dt
 import os
 
 from authentication import get_credentials
-from credentials.path import MAP_PATH, DRIVE_ID
 from googleapiclient.discovery import build
 
 from typing import TypedDict, TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from googleapiclient.discovery import Resource
+from googleapiclient.discovery import Resource
 
 
 class Metadata(TypedDict):
@@ -37,7 +35,7 @@ def create_service() -> Resource:
     return build("drive", "v3", credentials=creds)
 
 
-def list_files_drive(service) -> list[Metadata]:
+def list_files_drive(service, drive_id) -> list[Metadata]:
     """
     Fetches a list of files from a specific Google Drive folder.
 
@@ -50,7 +48,7 @@ def list_files_drive(service) -> list[Metadata]:
     file_list = (
         service.files()
         .list(
-            q=f"'{DRIVE_ID}' in parents",
+            q=f"'{drive_id}' in parents",
             pageSize=10,
             fields="nextPageToken, files(id, name, modifiedTime)",
         )
@@ -60,34 +58,35 @@ def list_files_drive(service) -> list[Metadata]:
     return file_list.get("files", [])
 
 
-def date_check(file_list: list[Metadata]) -> str:
+def date_check(file_list: list[Metadata], path) -> str:
     """
-    Compares modification timestamps between Google Drive and local files.
+    Checks if the file is present and compares modification timestamps between Google Drive and local files.
 
-    Calculates the time difference to determine which version is newer,
-    applying a 20-second tolerance margin to account for server-side
-    latency and file system precision drift.
+    If file is present, calculates the time difference to determine which
+    version is newer, applying a 20-second tolerance margin to account for
+    server-side latency and file system precision drift.
 
     Args:
         file_list: A list of metadata dictionaries.
+        path: The local directory path where the files are stored.
 
     Returns:
         str: Outcome of the comparison:
-            - "download": Cloud version is significantly newer.
+            - "download": Cloud version is significantly newer or the file is not present locally.
             - "upload": Local version is significantly newer.
             - "equal": Timestamps are within the tolerance margin.
             - "missing": The provided file_list is empty.
-
-    Note:
-        This function relies on the global MAP_PATH constant to locate local files.
     """
     if not file_list:
         return "missing"
 
     file = file_list[0]
+    if not os.path.isfile(os.path.join(path, file["name"])):
+        return "download"
+
     google = dt.datetime.fromisoformat(file["modifiedTime"])
     drive = dt.datetime.fromtimestamp(
-        os.path.getmtime(f"{MAP_PATH}\\{file["name"]}"), dt.timezone.utc
+        os.path.getmtime(os.path.join(path, file["name"])), dt.timezone.utc
     )
 
     diff = (google - drive).total_seconds()
@@ -98,3 +97,43 @@ def date_check(file_list: list[Metadata]) -> str:
         return "upload"
     else:
         return "equal"
+
+
+def setup_creds():
+    if not os.path.isdir(os.path.abspath("credentials")):
+        os.mkdir(f"{os.path.abspath(".")}\\credentials")
+    check = False
+    while check == False:
+        if os.path.isfile(os.path.join(os.path.abspath("credentials"), "credentials.json")):
+            check = True
+            continue
+        input(
+            "Please create a folder called 'credentials' in the location "
+            "of this program and put the 'credentials.json' inside"
+        )
+
+
+def create_paths():
+    cred_path = os.path.abspath("credentials")
+    test = os.path.join(cred_path, "path.py")
+    with open(test, "w+") as f:
+        drive_id = input(
+            "Please paste the 'drive id' of the Google Drive location "
+            "where the shared files are/need to be located. \n"
+            "It is the string of letters and numbers in the URL of the"
+            "Google Drive folder after 'folders/':\n"
+        )
+        path = input(
+            "Please paste the path to the folder where the files "
+            "are/need to be located on your hard drive. \n"
+            "If you're not sure check on the internet how to reach that location:\n"
+        )
+        path = path.replace("\\", "\\\\")
+        f.write(f'PATH = "{path}"' "\n" f'DRIVE_ID = "{drive_id}"')
+    return drive_id, path
+
+
+def startup():
+    cred_path = os.path.abspath("credentials")
+    if not os.path.isfile(test := os.path.join(cred_path, "path.py")):
+        return create_paths

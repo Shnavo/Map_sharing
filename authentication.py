@@ -3,11 +3,7 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from config import SCOPES
-
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from google.auth.external_account_authorized_user import Credentials as ExtCredentials
+from google.auth.external_account_authorized_user import Credentials as ExtCredentials
 
 
 def get_credentials() -> Credentials | ExtCredentials:

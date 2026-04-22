@@ -1,6 +1,6 @@
-from file_check import create_service, list_files_drive, date_check
+from file_check import *
 from upload_download import download_files, upload_files
-from credentials.path import MAP_PATH
+import os
 
 
 def main():
@@ -18,14 +18,17 @@ def main():
 
     Execution flow is managed via the 'date_check' logic to prevent unnecessary data transfer.
     """
+    if not os.path.isfile(os.path.abspath("credentials.json")):
+        setup_creds()
+    drive_id, path = startup()
     service = create_service()
-    file_list = list_files_drive(service)
-    action = date_check(file_list)
+    file_list = list_files_drive(service, drive_id)
+    action = date_check(file_list, path)
     if action == "download":
-        download_files(service, file_list, MAP_PATH)
+        download_files(service, file_list, path)
         return
     if action == "upload":
-        upload_files(service, file_list, MAP_PATH)
+        upload_files(service, file_list, path)
         return
     if action == "missing":
         raise Exception("missing files in Google folder")

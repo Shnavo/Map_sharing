@@ -1,2 +1,2 @@
-MAP_PATH = "C:/Path/To/Your/Maps"
-DRIVE_ID = "google drive folder id"
+PATH = "test"
+DRIVE_ID = "test"
