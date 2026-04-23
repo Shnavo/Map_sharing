@@ -39,7 +39,8 @@ The program follows a strict logic based on the modifiedTime field:
 - Idle: No action is taken if the timestamps are within the tolerance window (handling server-side time drift).
 
 ## TO-DO
-- [ ]create a first time launch setup for putting in correct paths
 - [ ]create a simple UI to show what's going on
+- [ ]automate program to start when launching and closing steam program
 - [x]TYPEHINTING!!!
 - [x]Initial release with OAuth2 support
+- [x]create a first time launch setup for putting in correct paths

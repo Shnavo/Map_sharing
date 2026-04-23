@@ -27,7 +27,9 @@ def download_files(service, file_list: list[Metadata], path: str) -> None:
     try:
         for item in file_list:
             request = service.files().get_media(fileId=item["id"])
-            file = open(os.path.join(path, item["name"]), "wb")
+            full_path = os.path.join(path, item["name"])
+            print(full_path)
+            file = open(full_path, "wb")
             downloader = MediaIoBaseDownload(file, request)
 
             done = False

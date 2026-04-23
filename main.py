@@ -8,19 +8,21 @@ def main():
     Orchestrates the map synchronization process between local storage and Google Drive.
 
     The workflow follows these steps:
-    1. Authenticates the user and initializes the Google Drive service.
-    2. Fetches metadata for specific map files from a predefined Google Drive folder.
-    3. Compares cloud timestamps with local file timestamps using a 20-second tolerance.
-    4. Decides on the required action:
-        - Uploads local files if they are newer.
-        - Downloads cloud files if they are newer.
-        - Skips if files are synchronized or if the cloud folder is empty.
+    0. Environment Check: Ensures 'credentials.json' exists and loads paths from 'path.txt'.
+    1. Authentication: Initializes the Google Drive API service instance.
+    2. Metadata Fetch: Retrieves file information from the specified Google Drive folder.
+    3. Conflict Resolution: Compares cloud and local timestamps with a 20-second tolerance.
+    4. Action Execution:
+        - Downloads cloud versions if they are newer or missing locally.
+        - Uploads local versions if they are newer than the cloud versions.
+        - Raises an exception if the remote folder is empty.
+        - Finishes if files are already in sync.
 
-    Execution flow is managed via the 'date_check' logic to prevent unnecessary data transfer.
+    Execution flow is managed via 'date_check' logic to optimize bandwidth usage.
     """
-    if not os.path.isfile(os.path.abspath("credentials.json")):
+    if not os.path.isfile(os.path.join("credentials", "credentials.json")):
         setup_creds()
-    drive_id, path = startup()
+    path, drive_id = startup()
     service = create_service()
     file_list = list_files_drive(service, drive_id)
     action = date_check(file_list, path)
@@ -31,7 +33,8 @@ def main():
         upload_files(service, file_list, path)
         return
     if action == "missing":
-        raise Exception("missing files in Google folder")
+        print("Error: The Google Drive folder is empty. Nothing to sync.")
+        return
     print("Files synchronized")
     return
 
