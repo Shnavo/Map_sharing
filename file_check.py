@@ -101,16 +101,15 @@ def date_check(file_list: list[Metadata], path) -> str:
 
 def setup_creds():
     if not os.path.isdir(os.path.abspath("credentials")):
-        os.mkdir(f"{os.path.abspath(".")}\\credentials")
-    check = False
+        os.mkdir(f"{os.getcwd()}\\credentials")
+    check = os.path.isfile(os.path.join(os.path.abspath("credentials"), "credentials.json"))
     while check == False:
+        input(
+            "Please put the 'credentials.json' inside the folder called "
+            "'credentials' in the location of this program"
+        )
         if os.path.isfile(os.path.join(os.path.abspath("credentials"), "credentials.json")):
             check = True
-            continue
-        input(
-            "Please create a folder called 'credentials' in the location "
-            "of this program and put the 'credentials.json' inside"
-        )
 
 
 def create_paths():
@@ -130,10 +129,16 @@ def create_paths():
         )
         path = path.replace("\\", "\\\\")
         f.write(f'PATH = "{path}"' "\n" f'DRIVE_ID = "{drive_id}"')
-    return drive_id, path
+    return path, drive_id
 
 
 def startup():
     cred_path = os.path.abspath("credentials")
-    if not os.path.isfile(test := os.path.join(cred_path, "path.py")):
+    if not os.path.isfile(file := os.path.join(cred_path, "path.py")):
         return create_paths
+    with open(file) as f:
+        lines = f.read().split("\n")
+    path, drive_id = lines
+    path = path.split("=")[1]
+    drive_id = drive_id.split("=")[1]
+    return path, drive_id
