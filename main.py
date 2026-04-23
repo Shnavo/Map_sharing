@@ -20,23 +20,32 @@ def main():
 
     Execution flow is managed via 'date_check' logic to optimize bandwidth usage.
     """
-    if not os.path.isfile(os.path.join("credentials", "credentials.json")):
-        setup_creds()
-    path, drive_id = startup()
-    service = create_service()
-    file_list = list_files_drive(service, drive_id)
-    action = date_check(file_list, path)
-    if action == "download":
-        download_files(service, file_list, path)
-        return
-    if action == "upload":
-        upload_files(service, file_list, path)
-        return
-    if action == "missing":
-        print("Error: The Google Drive folder is empty. Nothing to sync.")
-        return
-    print("Files synchronized")
-    return
+    try:
+        if not os.path.isfile(os.path.join("credentials", "credentials.json")):
+            setup_creds()
+
+        path, drive_id = startup()
+
+        service = create_service()
+
+        file_list = list_files_drive(service, drive_id)
+        action = date_check(file_list, path)
+
+        if action == "download":
+            download_files(service, file_list, path)
+            print("Files downloaded successfully")
+        elif action == "upload":
+            upload_files(service, file_list, path)
+            print("Files uploaded successfully")
+        elif action == "missing":
+            print("Error: The Google Drive folder is empty. Nothing to sync.")
+        else:
+            print("Files are already synchronized")
+
+    except Exception as e:
+        print(f"\nSomething went wrong: {e}")
+
+    input("\nProcess finished. Press Enter to exit...")
 
 
 if __name__ == "__main__":

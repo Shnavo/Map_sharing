@@ -45,7 +45,7 @@ def list_files_drive(service, drive_id) -> list[Metadata]:
     file_list = (
         service.files()
         .list(
-            q=f"{drive_id} in parents",
+            q=f"'{drive_id}' in parents",
             pageSize=10,
             fields="nextPageToken, files(id, name, modifiedTime)",
         )
@@ -139,16 +139,12 @@ def create_paths() -> tuple[str, str]:
     cred_path = os.path.abspath("credentials")
     file_path = os.path.join(cred_path, "path.txt")
     with open(file_path, "w+", encoding="utf-8") as f:
-        drive_id = (
-            input(
-                "Please paste the 'drive id' of the Google Drive location "
-                "where the shared files are/need to be located. \n"
-                "It is the string of letters and numbers in the URL of the"
-                "Google Drive folder after 'folders/':\n"
-            )
-            .strip()
-            .strip('"')
-        )
+        drive_id = input(
+            "Please paste the 'drive id' of the Google Drive location "
+            "where the shared files are/need to be located. \n"
+            "It is the string of letters and numbers in the URL of the"
+            "Google Drive folder after 'folders/':\n"
+        ).strip()
         path = (
             input(
                 "Please paste the path to the folder where the files "
@@ -184,6 +180,6 @@ def startup() -> tuple[str, str]:
 
     path, drive_id = lines[0], lines[1]
     path = path.split("=")[1].strip().strip('"')
-    drive_id = drive_id.split("=")[1].strip()
+    drive_id = drive_id.split("=")[1].strip().strip('"')
 
     return path, drive_id
